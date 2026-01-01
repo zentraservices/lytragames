@@ -1,0 +1,1830 @@
+<!doctype html>
+<html lang="en" data-theme="midnight">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Lytra</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+    :root{
+      --accent:#7c3aed;
+      --accent-soft: rgba(124,58,237,0.20);
+      --accent-2:#38bdf8;
+      --bg: radial-gradient(1200px 720px at 40% -12%, rgba(255,106,213,0.20), transparent 60%),
+            radial-gradient(1200px 620px at 85% 20%, rgba(75,201,255,0.18), transparent 60%),
+            radial-gradient(900px 520px at 15% 70%, rgba(255,176,229,0.14), transparent 55%),
+            #040510;
+      --bg-panel: rgba(10,12,18,0.74);
+      --text-main:#f8fafc;
+      --text-muted: rgba(248,250,252,0.72);
+      --border-subtle: rgba(255,255,255,0.12);
+      --shadow-soft: 0 16px 48px rgba(0,0,0,0.45);
+      --radius: 18px;
+      --sidebar-w: 220px;
+      --sidebar-compact-w: 64px;
+    }
+    html[data-theme="light"]{
+      --bg: radial-gradient(1100px 600px at 50% -10%, rgba(0,0,0,0.06), transparent 60%),
+            radial-gradient(900px 500px at 15% 30%, rgba(56,189,248,0.12), transparent 55%),
+            radial-gradient(900px 500px at 85% 55%, rgba(168,85,247,0.10), transparent 55%),
+            #e9edf3;
+      --bg-panel: rgba(255,255,255,0.78);
+      --text-main:#0f172a;
+      --text-muted: rgba(15,23,42,0.72);
+      --border-subtle: rgba(15,23,42,0.16);
+      --shadow-soft: 0 24px 80px rgba(0,0,0,0.18);
+    }
+    html[data-theme="amoled"]{
+      --bg: radial-gradient(1200px 600px at 50% -10%, rgba(255,255,255,0.06), transparent 60%),
+            #000000;
+      --bg-panel: rgba(0,0,0,0.72);
+      --text-main:#f8fafc;
+      --text-muted: rgba(248,250,252,0.70);
+      --border-subtle: rgba(255,255,255,0.16);
+      --shadow-soft: 0 24px 80px rgba(0,0,0,0.75);
+    }
+    html[data-theme="neon"]{
+      --bg: radial-gradient(1200px 720px at 40% -12%, rgba(255,106,213,0.26), transparent 60%),
+            radial-gradient(1100px 620px at 82% 30%, rgba(75,201,255,0.22), transparent 60%),
+            radial-gradient(900px 520px at 18% 68%, rgba(255,176,229,0.16), transparent 60%),
+            #050311;
+      --bg-panel: rgba(12,10,20,0.84);
+      --text-main:#f4edff;
+      --text-muted: rgba(244,237,255,0.72);
+      --border-subtle: rgba(255,106,213,0.26);
+      --shadow-soft: 0 18px 52px rgba(255,106,213,0.18);
+    }
+    html[data-theme="sunset"]{
+      --bg: radial-gradient(1100px 620px at 70% -10%, rgba(249,115,22,0.25), transparent 60%),
+            radial-gradient(900px 520px at 20% 40%, rgba(236,72,153,0.22), transparent 55%),
+            #0d0a12;
+      --bg-panel: rgba(24,14,26,0.82);
+      --text-main:#fff7ed;
+      --text-muted: rgba(255,247,237,0.72);
+      --border-subtle: rgba(252,165,165,0.26);
+      --shadow-soft: 0 30px 90px rgba(255,84,130,0.22);
+    }
+    html[data-theme="midnight"]{
+      --bg: radial-gradient(1200px 650px at 50% -10%, rgba(32,139,217,0.22), transparent 60%),
+            radial-gradient(1000px 540px at 15% 45%, rgba(45,212,191,0.16), transparent 55%),
+            linear-gradient(180deg, #02040a, #040b15);
+      --bg-panel: rgba(8,12,20,0.85);
+      --text-main:#e4f1ff;
+      --text-muted: rgba(228,241,255,0.70);
+      --border-subtle: rgba(124,152,192,0.26);
+      --shadow-soft: 0 30px 90px rgba(0,0,0,0.65);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: "Space Grotesk", "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      line-height:1.5;
+      letter-spacing:0.01em;
+      color:var(--text-main);
+      background: var(--bg);
+      overflow-x:hidden;
+      position:relative;
+      isolation:isolate;
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background: radial-gradient(1400px 900px at 50% 10%, rgba(255,255,255,0.07), transparent 60%),
+                  linear-gradient(120deg, rgba(255,106,213,0.06), rgba(75,201,255,0.05));
+      opacity:0.7;
+      pointer-events:none;
+      z-index:-3;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="url"],
+    input[type="search"],
+    select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--border-subtle);
+      background: var(--bg-panel);
+      color: var(--text-main);
+      font: inherit;
+      transition: border 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+    input:focus,
+    select:focus{
+      outline:none;
+      border-color: rgba(56,189,248,0.45);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      background: rgba(255,255,255,0.02);
+    }
+    button{
+      font: inherit;
+    }
+    button:not(#panic-btn):not(#settings-btn):not(.navbtn){
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.06);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 90%);
+      color:var(--text-main);
+      font-weight:600;
+      cursor:pointer;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.05), 0 0 16px rgba(168,85,247,0.18);
+      transition: transform 120ms ease, border 120ms ease, background 120ms ease, box-shadow 120ms ease, filter 120ms ease;
+    }
+    button:not(#panic-btn):not(#settings-btn):not(.navbtn):hover{
+      transform: translateY(-1px);
+      border-color: rgba(168,85,247,0.45);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.30), 0 0 0 1px rgba(255,255,255,0.10), 0 0 22px rgba(168,85,247,0.28);
+      filter: saturate(1.1);
+    }
+    html[data-theme="light"] button:not(#panic-btn):not(#settings-btn):not(.navbtn):hover{
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      filter: saturate(1.05);
+    }
+
+    /* Decorative waves (CSS-only, close to screenshot feel) */
+    .waves{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:0.6;
+      z-index:-1;
+      filter: blur(1px) saturate(1.1);
+    }
+    .waves:before, .waves:after{
+      content:"";
+      position:absolute;
+      left:-25vw;
+      right:-25vw;
+      bottom:-30vh;
+      height:70vh;
+      background:
+        radial-gradient(closest-side at 20% 60%, rgba(255,255,255,0.16), transparent 70%),
+        radial-gradient(closest-side at 50% 50%, rgba(255,255,255,0.08), transparent 70%),
+        radial-gradient(closest-side at 85% 40%, rgba(255,255,255,0.10), transparent 70%);
+      transform: rotate(-6deg);
+    }
+    /* Music tiles */
+    .music-tile{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .music-art{
+      width:46px;
+      height:46px;
+      border-radius:12px;
+      object-fit:cover;
+      border:1px solid var(--border-subtle);
+      flex:0 0 auto;
+    }
+    .music-meta{
+      min-width:0;
+      flex:1;
+    }
+    .music-title{
+      font-weight:700;
+      font-size:13px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .music-sub{
+      margin-top:2px;
+      color:var(--text-muted);
+      font-size:11px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .music-play{
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.14);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: var(--text-main);
+      cursor:pointer;
+      flex:0 0 auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    html[data-theme="light"] .music-play{
+      border-color: rgba(15,23,42,0.14);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    }
+    
+/* Particles */
+    #particles{
+      width:100%;
+      height:100%;
+      opacity:0.6;
+      filter: blur(0.5px);
+      mix-blend-mode: screen;
+    }
+    
+.waves:after{
+      bottom:-36vh;
+      opacity:0.65;
+      transform: rotate(8deg) scaleX(1.08);
+      filter: blur(0.2px);
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      min-height:100vh;
+    }
+    .layout::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+        radial-gradient(800px 500px at 15% 20%, rgba(255,106,213,0.08), transparent 65%),
+        radial-gradient(900px 480px at 85% 80%, rgba(75,201,255,0.10), transparent 65%);
+      background-size: 140px 140px, 140px 140px, auto, auto;
+      opacity:0.12;
+      mix-blend-mode: screen;
+      z-index:-1;
+    }
+
+    body.compact .layout{
+      grid-template-columns: var(--sidebar-compact-w) 1fr;
+    }
+
+    /* Sidebar */
+    .sidebar{
+      position:sticky;
+      top:0;
+      height:100vh;
+      padding:14px 12px;
+      border-right:1px solid var(--border-subtle);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      backdrop-filter: blur(14px);
+    }
+    html[data-theme="light"] .sidebar{
+      background: linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.35));
+    }
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin-top:4px;
+    }
+
+    .navbtn{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      width:100%;
+      padding:11px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      color:var(--text-main);
+      cursor:pointer;
+      text-align:left;
+      transition: transform 140ms ease, background 140ms ease, border 140ms ease, box-shadow 140ms ease, color 140ms ease;
+    }
+    .navbtn:hover{
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,106,213,0.32);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.24);
+    }
+    html[data-theme="light"] .navbtn:hover{
+      background: rgba(15,23,42,0.06);
+      border-color: rgba(15,23,42,0.12);
+    }
+    .navbtn.active{
+      background: linear-gradient(135deg, rgba(255,106,213,0.12), rgba(75,201,255,0.14));
+      border-color: rgba(255,106,213,0.6);
+      box-shadow: 0 14px 36px rgba(255,106,213,0.18);
+    }
+    .navicon{
+      width:28px;height:28px;
+      border-radius:10px;
+      display:grid;place-items:center;
+      background: radial-gradient(circle at 30% 30%, rgba(255,106,213,0.34), rgba(75,201,255,0.22));
+      border:1px solid rgba(255,255,255,0.18);
+    }
+    html[data-theme="light"] .navicon{
+      background: rgba(15,23,42,0.05);
+      border:1px solid rgba(15,23,42,0.10);
+    }
+    .navlabel{
+      font-size:13px;
+      opacity:0.92;
+      white-space:nowrap;
+    }
+    body.compact .navlabel{ display:none; }
+    body.compact .navbtn{ justify-content:center; padding:10px 6px; }
+
+    .ver{
+      position:absolute;
+      left:12px;
+      bottom:10px;
+      font-size:11px;
+      opacity:0.55;
+      user-select:none;
+    }
+    body.compact .ver{ display:none; }
+
+    /* Main */
+    .main{
+      padding:26px 32px;
+      width:min(1280px, calc(100vw - 36px));
+      margin:0 auto 32px;
+      display:flex;
+      flex-direction:column;
+      gap:24px;
+      overflow-x:hidden;
+    }
+    body.compact .main{ padding:18px; }
+
+    .tab-panel{ display:none; }
+    .tab-panel.active{ display:block; }
+
+    /* Home hero */
+    .hero{
+      min-height: calc(100vh - 44px);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:16px;
+      text-align:center;
+      padding:70px 0 34px;
+      position:relative;
+      isolation:isolate;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:10% 14%;
+      background: radial-gradient(800px 520px at 50% 0%, rgba(255,255,255,0.08), transparent 65%);
+      filter: blur(16px);
+      opacity:0.8;
+      z-index:-1;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:24% 18% auto 18%;
+      height:1px;
+      background: linear-gradient(90deg, transparent, rgba(255,106,213,0.65), transparent);
+      opacity:0.85;
+    }
+    .brand{
+      letter-spacing: 10px;
+      font-weight:500;
+      font-size: clamp(44px, 6vw, 64px);
+      background: linear-gradient(120deg, var(--accent), var(--accent-2) 50%, #5ad0ff 90%);
+      -webkit-background-clip:text;
+      color:transparent;
+      text-shadow: 0 0 18px rgba(255,106,213,0.28);
+    }
+    .tagline{
+      margin-top:-4px;
+      color:var(--text-muted);
+      font-size: 15px;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+    }
+    .hero-meta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top:-4px;
+    }
+    .pill{
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.04);
+      font-size:11px;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:var(--text-muted);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .pill-soft{
+      border-color: rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.02);
+    }
+    .pill-glow{
+      border-color: rgba(255,106,213,0.45);
+      color:#e0fbff;
+      background: radial-gradient(circle at 20% 30%, rgba(255,106,213,0.28), rgba(75,201,255,0.20));
+      box-shadow: 0 10px 32px rgba(255,106,213,0.18);
+    }
+    .pill-dot{
+      width:8px;height:8px;
+      border-radius:50%;
+      background: linear-gradient(135deg, #ff6ad5, #4bc9ff);
+      box-shadow:0 0 0 6px rgba(255,106,213,0.15);
+    }
+    .pill-soft .pill-dot{
+      box-shadow:0 0 0 6px rgba(255,255,255,0.10);
+      opacity:0.9;
+    }
+
+    .searchwrap{
+      width:min(520px, 92vw);
+      margin-top:12px;
+      background: rgba(255,255,255,0.03);
+      border:1px solid rgba(255,106,213,0.24);
+      border-radius: 12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+      transition:border 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+    html[data-theme="light"] .searchwrap{
+      background: rgba(255,255,255,0.78);
+      border:1px solid rgba(168,85,247,0.20);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.10);
+    }
+    .searchwrap:focus-within{
+      border-color: rgba(255,106,213,0.55);
+      box-shadow: 0 14px 44px rgba(255,106,213,0.20);
+      transform: translateY(-1px);
+    }
+    .searchwrap svg{ opacity:0.85; }
+    .searchwrap input{
+      width:100%;
+      background:transparent;
+      border:none;
+      outline:none;
+      color:var(--text-main);
+      font-size:13px;
+      letter-spacing:0.03em;
+    }
+
+    .cards{
+      margin-top:36px;
+      width:min(1200px, 96vw);
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap:18px;
+    }
+    @media (max-width: 980px){
+      .hero{ justify-content:flex-start; padding-top:70px; }
+    }
+
+    .card{
+      background: linear-gradient(165deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      border:1px solid rgba(255,106,213,0.20);
+      border-radius: 16px;
+      padding:18px 18px 16px 18px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(10px);
+      min-height:124px;
+    }
+    html[data-theme="light"] .card{
+      background: rgba(255,255,255,0.78);
+      border:1px solid rgba(15,23,42,0.12);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.10);
+    }
+    .card h3{
+      margin:14px 0 8px 0;
+      font-size:14px;
+      font-weight:600;
+    }
+    .card ul{
+      margin:0;
+      padding-left:18px;
+      color:var(--text-muted);
+      font-size:11px;
+      line-height:1.55;
+    }
+    .card .cicon{
+      width:34px;height:34px;
+      border-radius:12px;
+      display:grid;place-items:center;
+      background: radial-gradient(circle at 30% 30%, rgba(255,106,213,0.32), rgba(75,201,255,0.24));
+      border:1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+    }
+
+    /* Games grid */
+    .panel-title{
+      font-size:22px;
+      margin: 0 0 12px 0;
+      letter-spacing: 0.18em;
+      font-weight:700;
+      text-transform:uppercase;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap:16px;
+    }
+    .tile{
+      background: linear-gradient(155deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+      border:1px solid rgba(255,106,213,0.16);
+      border-radius: 14px;
+      padding:14px;
+      cursor:pointer;
+      transition: transform 140ms ease, border 140ms ease, background 140ms ease;
+      backdrop-filter: blur(10px);
+    }
+    html[data-theme="light"] .tile{
+      background: rgba(255,255,255,0.78);
+      border:1px solid rgba(168,85,247,0.18);
+    }
+    .tile:hover{
+      transform: translateY(-2px);
+      border-color: rgba(255,106,213,0.45);
+      background: linear-gradient(155deg, rgba(255,106,213,0.16), rgba(75,201,255,0.12));
+      box-shadow: 0 16px 44px rgba(255,106,213,0.18);
+    }
+    .tile .tname{ font-weight:600; font-size:13px; }
+    .tile .tdesc{ margin-top:6px; color:var(--text-muted); font-size:11px; line-height:1.45; }
+
+    /* Overlay */
+    #game-overlay{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,0.88);
+      z-index:2147483000;
+      display:none;
+      align-items:center;
+      justify-content:center;
+    }
+    #game-overlay .framewrap{
+      width:100vw;
+      height:100vh;
+      border-radius:0;
+      overflow:hidden;
+      border:none;
+      background:#000;
+      box-shadow:none;
+      position:relative;
+    }
+    #game-overlay iframe{
+      width:100%;
+      height:100%;
+      border:none;
+      background:#000;
+    }
+    #close-overlay{
+      position:fixed;
+      top:16px;
+      left:16px;
+      z-index:2147483646;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.45);
+      color: var(--text-main);
+      cursor:pointer;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Always-visible buttons */
+    #panic-btn, #settings-btn{
+      position:fixed;
+      top:16px;
+      z-index:2147483647;
+      padding:10px 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.18);
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 8px 24px rgba(0,0,0,0.28);
+      pointer-events:auto;
+    }
+    #panic-btn{ right:16px; background:linear-gradient(135deg, rgba(239,68,68,0.95), rgba(249,115,22,0.9)); }
+    #settings-btn{ right:94px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); }
+
+    /* Password gate */
+    #password-gate{ z-index:2147483647; }
+
+    /* Small helpers */
+    a{ color: var(--accent); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+    .section-bar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin:0 0 14px 0;
+    }
+    .count{
+      color:var(--text-muted);
+      font-size:12px;
+    }
+    .muted{
+      color:var(--text-muted);
+    }
+    #music-playerbar{
+      position:sticky;
+      bottom:14px;
+      margin-top:16px;
+      max-width:1100px;
+    }
+    #music-playerbar .card{
+      box-shadow:none;
+    }
+
+
+/* =========================
+   LYTRA REDESIGN (Purple/Blue)
+   Futuristic + Cleaner Sidebar
+   ========================= */
+:root{
+  --accent:#7c3aed;
+  --accent-2:#38bdf8;
+  --accent-soft: rgba(124,58,237,0.20);
+  --sidebar-w: 248px;
+  --sidebar-compact-w: 72px;
+}
+
+/* Sidebar shell */
+.sidebar{
+  padding:16px 14px;
+  background:
+    radial-gradient(900px 520px at 25% 10%, rgba(124,58,237,0.18), transparent 60%),
+    radial-gradient(900px 520px at 80% 35%, rgba(56,189,248,0.12), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  border-right: 1px solid rgba(124,58,237,0.22);
+  box-shadow: 14px 0 42px rgba(0,0,0,0.28);
+  position:sticky;
+  overflow:hidden;
+}
+.sidebar::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background:
+    linear-gradient(180deg, rgba(124,58,237,0.20), transparent 35%),
+    linear-gradient(90deg, rgba(56,189,248,0.16), transparent 30%);
+  opacity:0.6;
+  pointer-events:none;
+  filter: blur(10px);
+}
+.sidebar::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(1200px 700px at 40% 30%, rgba(56,189,248,0.10), transparent 60%),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size:auto, 120px 120px;
+  opacity:0.10;
+  mix-blend-mode:screen;
+}
+
+/* Brandmark */
+.brandmark{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 10px 12px 10px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(10px);
+  position:relative;
+  z-index:1;
+}
+.brandmark__icon{
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(124,58,237,0.85), rgba(56,189,248,0.55)),
+    linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.18);
+  box-shadow: 0 14px 34px rgba(124,58,237,0.22);
+}
+.brandmark__name{
+  font-weight:700;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  font-size:14px;
+  line-height:1.1;
+}
+.brandmark__sub{
+  margin-top:2px;
+  color:var(--text-muted);
+  font-size:11px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+}
+
+/* Nav grouping + spacing */
+.nav{
+  margin-top:12px;
+  gap:8px;
+  position:relative;
+  z-index:1;
+}
+
+/* Buttons */
+.navbtn{
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.025);
+  padding:11px 12px;
+  position:relative;
+  overflow:hidden;
+}
+.navbtn::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:10px;
+  bottom:10px;
+  width:3px;
+  border-radius:999px;
+  background: transparent;
+  box-shadow:none;
+  opacity:0;
+  transition: opacity 140ms ease, background 140ms ease;
+}
+.navbtn:hover{
+  background: rgba(255,255,255,0.045);
+  border-color: rgba(124,58,237,0.32);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.24);
+  transform: translateY(-1px);
+}
+.navbtn.active{
+  background: linear-gradient(135deg, rgba(124,58,237,0.16), rgba(56,189,248,0.10));
+  border-color: rgba(124,58,237,0.55);
+  box-shadow: 0 18px 44px rgba(124,58,237,0.16);
+}
+.navbtn.active::before{
+  opacity:1;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  box-shadow: 0 0 0 6px rgba(124,58,237,0.14);
+}
+
+/* Icon container */
+.navicon{
+  width:30px;
+  height:30px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.14);
+  background:
+    radial-gradient(circle at 30% 30%, rgba(124,58,237,0.35), rgba(56,189,248,0.18));
+  box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+}
+.navbtn:hover .navicon{
+  border-color: rgba(56,189,248,0.26);
+}
+
+/* Compact mode refinements */
+body.compact .brandmark__text{ display:none; }
+body.compact .brandmark{
+  justify-content:center;
+  padding:10px 8px;
+}
+body.compact .navbtn{
+  padding:10px 6px;
+}
+
+
+/* Lytra brand tuning */
+.brand{
+  background: linear-gradient(120deg, var(--accent), var(--accent-2) 55%, #60a5fa 90%);
+  -webkit-background-clip:text;
+  color:transparent;
+  text-shadow: 0 0 18px rgba(124,58,237,0.22);
+}
+
+</style>
+</head>
+<body>
+  <div class="waves" aria-hidden="true"></div>
+  <canvas id="particles" aria-hidden="true" style="position:fixed;inset:0;z-index:-2;pointer-events:none;"></canvas>
+
+  <div class="layout">
+    <aside class="sidebar">
+
+      <div class="brandmark" aria-label="Lytra">
+        <div class="brandmark__icon" aria-hidden="true"></div>
+        <div class="brandmark__text">
+          <div class="brandmark__name">Lytra</div>
+          <div class="brandmark__sub">Portal Console</div>
+        </div>
+      </div>
+      <nav class="nav" aria-label="Sidebar">
+        <button class="navbtn active" data-tab-target="home">
+          <span class="navicon" aria-hidden="true">
+            <!-- home icon -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1v-10.5Z" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </span>
+          <span class="navlabel">Home</span>
+        </button>
+
+        <button class="navbtn" data-tab-target="games">
+          <span class="navicon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M7 7h10a4 4 0 0 1 4 4v6a3 3 0 0 1-3 3h-1l-2-3H9l-2 3H6a3 3 0 0 1-3-3v-6a4 4 0 0 1 4-4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="navlabel">Games</span>
+        </button>
+
+        <button class="navbtn" data-tab-target="apps">
+          <span class="navicon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M5 5h6v6H5V5Zm8 0h6v6h-6V5ZM5 13h6v6H5v-6Zm8 0h6v6h-6v-6Z" stroke="currentColor" stroke-width="1.6"/>
+            </svg>
+          </span>
+          <span class="navlabel">Apps</span>
+        </button>
+
+        <button class="navbtn" data-tab-target="discord">
+          <span class="navicon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M8 8c1.2-.7 2.6-1 4-1s2.8.3 4 1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M7 17c1.2.9 2.6 1.4 5 1.4s3.8-.5 5-1.4c1.3-3.9 1.3-7.1 0-10-1.3-.9-2.5-1.3-3.5-1.5l-.7 1.2M7 7c1-.7 2.2-1.1 3.5-1.3l.7 1.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              <path d="M9.2 13.2h.01M14.8 13.2h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="navlabel">Discord</span>
+        </button>
+        <button class="navbtn" data-tab-target="music">
+          <span class="navicon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M9 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M19 16a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M11.5 15V6l10-2v9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="navlabel">Music</span>
+        </button>
+
+
+        <button class="navbtn" data-tab-target="settings">
+          <span class="navicon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4Z" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M19.4 15a8 8 0 0 0 .1-1l2-1.2-2-3.4-2.2.7a8 8 0 0 0-1.6-1L15 6.9h-6L8.3 9a8 8 0 0 0-1.6 1L4.5 9.3 2.5 12.7l2 1.2a8 8 0 0 0 0 2l-2 1.2 2 3.4 2.2-.7a8 8 0 0 0 1.6 1L9 21.1h6l.7-2.1a8 8 0 0 0 1.6-1l2.2.7 2-3.4-2-1.2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="navlabel">Settings</span>
+        </button>
+      </nav>
+
+      <div class="ver">Version: Lytra 1.0</div>
+    </aside>
+
+    <main class="main">
+      <!-- HOME -->
+      <section class="tab-panel active" data-tab="home">
+        <div class="hero">
+          <div class="brand">LYTRA</div>
+          <div class="tagline" id="tagline">Navigate beyond the firewall</div>
+          <div class="hero-meta">
+            <div class="pill pill-glow"><span class="pill-dot"></span>Quantum Access</div>
+            <div class="pill pill-soft"><span class="pill-dot"></span>v4.1 • Secure Mode</div>
+          </div>
+          <div class="cards">
+            <div class="card">
+              <div class="cicon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M13 2 3 14h8l-1 8 11-14h-8l0-6Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h3>Stealth Launch</h3>
+              <ul>
+                <li>Minimal surface area—jump in fast</li>
+                <li>Games, apps, music all one click away</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <div class="cicon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2 4 6v6c0 5 3.4 9.4 8 10 4.6-.6 8-5 8-10V6l-8-4Z" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+              </div>
+              <h3>Lockdown Ready</h3>
+              <ul>
+                <li>Password gate option for access control</li>
+                <li>Quick Panic redirect configurable in Settings</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <div class="cicon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M7 3h10v6H7V3Zm-2 8h14v10H5V11Z" stroke="currentColor" stroke-width="1.6"/>
+                </svg>
+              </div>
+              <h3>Adaptive Aesthetic</h3>
+              <ul>
+                <li>Glass panels + compact mode</li>
+                <li>Six themes, dynamic accent controls</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GAMES -->
+      <section class="tab-panel" data-tab="games">
+        <h2 class="panel-title">Games</h2>
+        <div class="section-bar">
+          <div class="searchwrap" style="margin:0;width:min(520px,92vw);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="1.6"/><path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><input id="games-search" placeholder="Search games…" autocomplete="off"/></div><div id="games-count" class="count"></div>
+        </div>
+        <div class="grid" id="games-grid"></div>
+      </section>
+
+      <!-- APPS -->
+      <section class="tab-panel" data-tab="apps">
+        <h2 class="panel-title">Apps</h2>
+        <div class="grid" id="apps-grid"></div>
+      </section>
+
+      <!-- DISCORD -->
+      <section class="tab-panel" data-tab="discord">
+        <h2 class="panel-title">Discord</h2>
+        <div class="tile" id="discord-tile" style="max-width:560px;">
+          <div class="tname">Open Discord</div>
+          <div class="tdesc">Click to open a Discord invite or server link.</div>
+        </div>
+      </section>
+
+      
+      <!-- MUSIC -->
+      <section class="tab-panel" data-tab="music">
+        <h2 class="panel-title">Music</h2>
+        <p style="margin-top:-6px;color:var(--text-muted);max-width:900px;">
+          Search songs using the iTunes API and play 30-second previews.
+        </p>
+
+        <div class="section-bar">
+          <div class="searchwrap" style="margin:0;width:min(640px,92vw);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M16.5 16.5 21 21" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+            <input id="music-search" placeholder="Search iTunes (song or artist)…" autocomplete="off"/>
+          </div>
+          <button id="music-search-btn" type="button">Search</button>
+          <div id="music-count" class="count"></div>
+        </div>
+
+        <div id="music-results" class="grid"></div>
+
+        <div id="music-playerbar">
+          <div class="card" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
+            <img id="music-art" src="" alt="" style="width:54px;height:54px;border-radius:12px;display:none;object-fit:cover;border:1px solid var(--border-subtle);"/>
+            <div style="min-width:220px;flex:1;">
+              <div id="music-now-title" style="font-weight:700;font-size:13px;">Not playing</div>
+              <div id="music-now-sub" style="color:var(--text-muted);font-size:12px;">Search and pick a track.</div>
+            </div>
+            <audio id="music-audio" controls style="width:min(520px,92vw);"></audio>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- SETTINGS -->
+      <section class="tab-panel" data-tab="settings">
+        <h2 class="panel-title">Settings</h2>
+        <p style="margin-top:-6px;color:var(--text-muted);max-width:900px;">
+          These settings save to your browser only (localStorage).
+        </p>
+
+        <div style="display:grid;gap:14px;max-width:940px;">
+          <div class="card" style="box-shadow:none;">
+            <h3 style="margin:0 0 10px 0;">Panic Button</h3>
+            <div style="display:grid;gap:10px;max-width:560px;">
+              <label>
+                <div style="opacity:0.9;margin-bottom:6px;">Preset</div>
+                <select id="panicPreset">
+                  <option value="https://myapps.classlink.com/home">ClassLink</option>
+                  <option value="https://lwsd414.instructure.com/">Canvas (LWSD)</option>
+                  <option value="custom">Custom…</option>
+                </select>
+              </label>
+              <label>
+                <div style="opacity:0.9;margin-bottom:6px;">Custom URL</div>
+                <input id="panicCustomUrl" type="url" placeholder="https://example.com"/>
+              </label>
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <button id="savePanicUrl" type="button">Save</button>
+                <span id="panicStatus" style="opacity:0.85;"></span>
+              </div>
+              <label style="display:flex;gap:10px;align-items:center;cursor:pointer;user-select:none;">
+                <input id="panicConfirm" type="checkbox"/>
+                <span style="opacity:0.9;">Ask “Are you sure?” before redirecting</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card" style="box-shadow:none;">
+            <h3 style="margin:0 0 10px 0;">Theme</h3>
+            <div style="display:grid;gap:10px;max-width:560px;">
+              <label>
+                <div style="opacity:0.9;margin-bottom:6px;">Theme mode</div>
+                <select id="themeMode">
+                  <option value="dark">Dark (default)</option>
+                  <option value="light">Light</option>
+                  <option value="amoled">AMOLED (pure black)</option>
+                  <option value="neon">Neon Grid</option>
+                  <option value="sunset">Sunset Glow</option>
+                  <option value="midnight">Midnight Blue</option>
+                </select>
+              </label>
+              <label>
+                <div style="opacity:0.9;margin-bottom:6px;">Accent color</div>
+                <select id="accentPreset">
+                  <option value="nebula">Nebula (purple/blue/pink)</option>
+                  <option value="aurora">Aurora (violet/cyan)</option>
+                  <option value="blossom">Blossom (pink/violet)</option>
+                  <option value="frostbite">Frostbite (cyan/purple)</option>
+                  <option value="lytra">Lytra (purple/blue)</option>
+                </select>
+              </label>
+              <label style="display:flex;gap:10px;align-items:center;cursor:pointer;user-select:none;">
+                <input id="compactMode" type="checkbox"/>
+                <span style="opacity:0.9;">Compact sidebar</span>
+              </label>
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <button id="resetSettings" type="button">Reset</button>
+                <span id="themeStatus" style="opacity:0.85;"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="box-shadow:none;">
+            <h3 style="margin:0 0 10px 0;">Security</h3>
+            <div style="display:grid;gap:10px;max-width:560px;">
+              <label>
+                <div style="opacity:0.9;margin-bottom:6px;">Site password</div>
+                <input id="sitePassword" type="password" placeholder="Set or change password"/>
+              </label>
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <button id="saveSitePassword" type="button">Save password</button>
+                <button id="lockNow" type="button">Lock now</button>
+                <span id="securityStatus" style="opacity:0.85;"></span>
+              </div>
+              <div style="opacity:0.75;font-size:0.95em;">
+                This is a simple in-browser password gate (not secure against someone who can edit the file).
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Overlay viewer -->
+  <div id="game-overlay" aria-hidden="true">
+    <div class="framewrap">
+      <button id="close-overlay" type="button">Close</button>
+      <iframe id="game-frame" src="about:blank" referrerpolicy="no-referrer" allow="fullscreen" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- Always visible buttons -->
+  <button id="settings-btn" title="Settings" aria-label="Settings Button">Settings</button>
+  <button id="panic-btn" title="Panic" aria-label="Panic Button">Panic</button>
+
+  <!-- Password Gate -->
+  <div id="password-gate" role="dialog" aria-modal="true" aria-label="Password required"
+    style="position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;">
+    <div style="width:min(520px,92vw);background:rgba(20,20,20,0.95);border:1px solid rgba(255,255,255,0.18);border-radius:16px;padding:18px;box-shadow:0 24px 80px rgba(0,0,0,0.65);">
+      <h2 style="margin:0 0 8px 0;">Password required</h2>
+      <p style="margin:0 0 14px 0;opacity:0.85;">Enter the password to access the games.</p>
+      <div style="display:grid;gap:10px;">
+        <input id="passwordInput" type="password" placeholder="Password"/>
+        <button id="passwordSubmit" type="button">Unlock</button>
+        <button id="passwordReset" type="button" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#fff;">Reset</button>
+        <div id="passwordError" style="min-height:20px;opacity:0.9;"></div>
+        <div style="opacity:0.7;font-size:0.92em;">
+          Tip: You can change the password in <strong>Settings → Security</strong>.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+
+
+  <!-- Game load failure modal -->
+  <div id="game-fail-modal" role="dialog" aria-modal="true" aria-label="Game failed"
+    style="position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,0.72);display:none;align-items:center;justify-content:center;">
+    <div style="width:min(520px,92vw);background:rgba(20,20,20,0.95);border:1px solid rgba(255,255,255,0.18);border-radius:16px;padding:18px;box-shadow:0 24px 80px rgba(0,0,0,0.65);">
+      <h2 style="margin:0 0 8px 0;">Game didn’t load</h2>
+      <p style="margin:0 0 14px 0;opacity:0.85;">If it doesn’t work, download the HTML and try opening it.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button id="download-failed-html" type="button">Download</button>
+        <button id="close-fail-modal" type="button" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:#fff;">Close</button>
+      </div>
+      <div id="fail-detail" style="margin-top:10px;opacity:0.7;font-size:12px;word-break:break-all;"></div>
+    </div>
+  </div>
+
+
+
+<!-- FINAL_REBIND_START -->
+
+<!-- FINAL_REBIND_END -->
+
+
+<!-- UNLOCK_REBIND_START -->
+
+<!-- UNLOCK_REBIND_END -->
+
+
+<!-- NAV_REBIND_START -->
+
+<!-- NAV_REBIND_END -->
+
+
+<script>
+(function(){
+
+  // ----------------------- Animated particles -----------------------
+  function initParticles(){
+    const canvas = document.getElementById("particles");
+    if(!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+    const DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    const accent = (getComputedStyle(document.documentElement).getPropertyValue("--accent") || "#7c3aed").trim() || "#7c3aed";
+    const accent2 = (getComputedStyle(document.documentElement).getPropertyValue("--accent-2") || "#22d3ee").trim() || "#22d3ee";
+    const withAlpha = (c, a) => {
+      if(!c) return `rgba(124,58,237,${a})`;
+      const color = c.trim();
+      if(color.startsWith("#")){
+        const hex = color.length === 4
+          ? "#" + color[1] + color[1] + color[2] + color[2] + color[3] + color[3]
+          : color;
+        const r = parseInt(hex.slice(1,3),16);
+        const g = parseInt(hex.slice(3,5),16);
+        const b = parseInt(hex.slice(5,7),16);
+        return `rgba(${r},${g},${b},${a})`;
+      }
+      if(color.startsWith("rgb")) return color.replace(")", "," + a + ")").replace("rgb(", "rgba(");
+      if(color.startsWith("hsl")) return color.replace(")", "," + a + ")").replace("hsl(", "hsla(");
+      return color;
+    };
+
+    let w = 0, h = 0;
+    function resize(){
+      w = Math.floor(window.innerWidth);
+      h = Math.floor(window.innerHeight);
+      canvas.width = Math.floor(w * DPR);
+      canvas.height = Math.floor(h * DPR);
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const COUNT = prefersReduced ? 45 : 160;
+    const SPEED = prefersReduced ? 0.25 : 1.05;
+
+    const particles = Array.from({length: COUNT}).map(() => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: 0.7 + Math.random() * 1.8,
+      vx: (Math.random() - 0.5) * SPEED,
+      vy: (Math.random() - 0.5) * SPEED,
+      a: 0.35 + Math.random() * 0.55
+    }));
+
+    function step(){
+      const accentNow = (getComputedStyle(document.documentElement).getPropertyValue("--accent") || accent).trim() || accent;
+      const accentNow2 = (getComputedStyle(document.documentElement).getPropertyValue("--accent-2") || accent2).trim() || accent2;
+      ctx.clearRect(0,0,w,h);
+
+      // Dots
+      for(const p of particles){
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if(p.x < -20) p.x = w + 20;
+        if(p.x > w + 20) p.x = -20;
+        if(p.y < -20) p.y = h + 20;
+        if(p.y > h + 20) p.y = -20;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = withAlpha(accentNow, p.a);
+        ctx.fill();
+      }
+
+      // Light connections
+      const maxDist = prefersReduced ? 130 : 210;
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const a = particles[i], b = particles[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d2 = dx*dx + dy*dy;
+          if(d2 < maxDist*maxDist){
+            const d = Math.sqrt(d2);
+            const alpha = (1 - d/maxDist) * 0.15;
+            ctx.strokeStyle = withAlpha(accentNow2, alpha.toFixed(3));
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+// ----------------------- Constants -----------------------
+  const ZONES_URL = "https://cdn.jsdelivr.net/gh/Notrexed/assets@latest/allzone.json";
+  const COVER_URL = "https://cdn.jsdelivr.net/gh/Notrexed/covers@main";
+  const HTML_URL  = "https://cdn.jsdelivr.net/gh/Notrexed/html@latest";
+  const DISCORD_URL = "https://discord.gg/HpaQ5zq6";
+
+  const APPS = [
+    { name: "ClassLink", desc: "myapps.classlink.com", url: "https://myapps.classlink.com/home" },
+    { name: "Canvas", desc: "lwsd414.instructure.com", url: "https://lwsd414.instructure.com/" }
+  ];
+
+  const KEYS = {
+    panicUrl: "panic_url_v1",
+    panicConfirm: "panic_confirm_v1",
+    theme: "ui_theme_v1",
+    accent: "ui_accent_v1",
+    compact: "ui_compact_v1",
+    sitePass: "site_password_v1"
+  };
+
+  const DEFAULTS = {
+    panicUrl: "https://myapps.classlink.com/home",
+    panicConfirm: "0",
+    theme: "midnight",
+    accent: "lytra",
+    compact: "0",
+    sitePass: ""
+  };
+  const THEMES = ["dark","light","amoled","neon","sunset","midnight"];
+  const ACCENTS = {
+    nebula:{accent:"#ff6ad5", soft:"rgba(255,106,213,0.24)", glow:"#4bc9ff"},
+    aurora:{accent:"#ff8bd1", soft:"rgba(255,139,209,0.22)", glow:"#62d4ff"},
+    blossom:{accent:"#ff7fcf", soft:"rgba(255,127,207,0.24)", glow:"#4bb8ff"},
+    frostbite:{accent:"#4bc9ff", soft:"rgba(75,201,255,0.22)", glow:"#ff6ad5"},
+    lytra:{accent:"#7c3aed", soft:"rgba(124,58,237,0.22)", glow:"#38bdf8"}
+  };
+  const ACCENT_KEYS = Object.keys(ACCENTS);
+
+  // ----------------------- Helpers -----------------------
+  const $ = (id) => document.getElementById(id);
+  const get = (k, d) => localStorage.getItem(k) ?? d;
+  const set = (k, v) => localStorage.setItem(k, v);
+
+  function normalize(s){ return (s||"").toLowerCase(); }
+
+  function setActiveTab(tab){
+    document.querySelectorAll(".tab-panel").forEach(p => p.classList.toggle("active", (p.dataset.tab||"") === tab));
+    document.querySelectorAll("[data-tab-target]").forEach(b => b.classList.toggle("active", (b.dataset.tabTarget||"") === tab));
+  }
+
+  // ----------------------- Theme -----------------------
+  function applyTheme(){
+    const stored = get(KEYS.theme, DEFAULTS.theme);
+    const mode = THEMES.includes(stored) ? stored : DEFAULTS.theme;
+    if(mode !== stored) set(KEYS.theme, mode);
+    document.documentElement.setAttribute("data-theme", mode);
+
+    const storedAccent = get(KEYS.accent, DEFAULTS.accent);
+    const accentKey = ACCENT_KEYS.includes(storedAccent) ? storedAccent : DEFAULTS.accent;
+    if(accentKey !== storedAccent) set(KEYS.accent, accentKey);
+    const a = ACCENTS[accentKey];
+    document.documentElement.style.setProperty("--accent", a.accent);
+    document.documentElement.style.setProperty("--accent-soft", a.soft);
+    document.documentElement.style.setProperty("--accent-2", a.glow || a.accent);
+
+    const compact = get(KEYS.compact, DEFAULTS.compact) === "1";
+    document.body.classList.toggle("compact", compact);
+  }
+
+  // ----------------------- Overlay Player -----------------------
+  const overlay = () => $("game-overlay");
+  const frame = () => $("game-frame");
+
+  function showFailModal(reason, url){
+    window.__LAST_FAILED_GAME_URL__ = url;
+    const modal = $("game-fail-modal");
+    const detail = $("fail-detail");
+    if(detail) detail.textContent = (reason ? (reason + " — ") : "") + url;
+    if(modal) modal.style.display = "flex";
+  }
+
+  function closeFailModal(){
+    const modal = $("game-fail-modal");
+    if(modal) modal.style.display = "none";
+  }
+
+  async function openOverlay(url){
+    // Show overlay
+    overlay().style.display = "flex";
+    overlay().setAttribute("aria-hidden","false");
+
+    // Always show popup on launch (as requested)
+    showFailModal("If it doesn’t work, download the HTML", url);
+
+    // Reset frame
+    const ifr = frame();
+    ifr.removeAttribute("srcdoc");
+    ifr.src = "about:blank";
+
+    // Attempt to fetch + run as srcdoc (avoids "shows code")
+    try{
+      const controller = new AbortController();
+      const t = setTimeout(() => controller.abort(), 10000);
+      const res = await fetch(url, { signal: controller.signal, mode: "cors" });
+      clearTimeout(t);
+      if(!res.ok){
+        showFailModal("HTTP " + res.status, url);
+        return;
+      }
+      let text = await res.text();
+
+      // base href for relative assets
+      const u = new URL(url);
+      const baseHref = u.origin + u.pathname.replace(/[^\/]+$/, "");
+      if(/<head[^>]*>/i.test(text)){
+        text = text.replace(/<head[^>]*>/i, (m) => m + `<base href="${baseHref}">`);
+      }else{
+        text = `<head><base href="${baseHref}"></head>` + text;
+      }
+
+      ifr.setAttribute("srcdoc", text);
+
+      // Watchdog: if blocked/blank, update modal detail after 5s (modal already visible)
+      setTimeout(() => {
+        try{
+          const doc = ifr.contentDocument;
+          const bodyText = doc && doc.body ? doc.body.innerText.trim() : "";
+          if(!bodyText || bodyText.length < 10){
+            showFailModal("Game failed to render or was blocked", url);
+          }
+        }catch(e){
+          showFailModal("Blocked by browser security", url);
+        }
+      }, 5000);
+    }catch(e){
+      showFailModal(e && e.name === "AbortError" ? "Timed out" : "Failed to load", url);
+    }
+  }
+
+  function closeOverlay(){
+    overlay().style.display = "none";
+    overlay().setAttribute("aria-hidden","true");
+    const ifr = frame();
+    ifr.removeAttribute("srcdoc");
+    ifr.src = "about:blank";
+  }
+
+  // ----------------------- Games feed -----------------------
+  function buildZoneHtmlUrl(z){
+    let u = (z && z.url) ? String(z.url) : "";
+    return u.replace("{HTML_URL}", HTML_URL).replace("{COVER_URL}", COVER_URL);
+  }
+  function buildCoverUrl(z){
+    let c = (z && z.cover) ? String(z.cover) : "";
+    return c.replace("{COVER_URL}", COVER_URL).replace("{HTML_URL}", HTML_URL);
+  }
+  function isSoundboardZone(z){
+    const name = (z && z.name ? z.name : "").toLowerCase();
+    return name.includes("sound") && name.includes("board");
+  }
+
+  let ALL_GAMES = [];
+
+
+  // ----------------------- iTunes Music -----------------------
+  async function itunesSearch(term){
+    const q = (term || "").trim();
+    if(!q) return [];
+    const url = "https://itunes.apple.com/search?term=" + encodeURIComponent(q) + "&entity=song&limit=32";
+    const res = await fetch(url);
+    const data = await res.json();
+    return Array.isArray(data.results) ? data.results : [];
+  }
+
+  function renderMusic(results){
+    const wrap = document.getElementById("music-results");
+    const countEl = document.getElementById("music-count");
+    if(!wrap) return;
+
+    if(countEl) countEl.textContent = `${results.length} result${results.length===1?"":"s"}`;
+
+    wrap.innerHTML = "";
+    results.forEach(r => {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      const art = (r.artworkUrl100 || "").replace("100x100", "200x200");
+      tile.innerHTML = `
+        <div class="music-tile">
+          <img class="music-art" src="${art}" alt="">
+          <div class="music-meta">
+            <div class="music-title">${r.trackName || "Untitled"}</div>
+            <div class="music-sub">${r.artistName || ""}${r.collectionName ? " • " + r.collectionName : ""}</div>
+          </div>
+          <button class="music-play" type="button">Play</button>
+        </div>
+      `;
+      tile.querySelector(".music-play").addEventListener("click", () => playPreview(r));
+      wrap.appendChild(tile);
+    });
+
+    if(results.length === 0){
+      wrap.innerHTML = `<div style="color:var(--text-muted);font-size:12px;">No results.</div>`;
+    }
+  }
+
+  function playPreview(r){
+    const audio = document.getElementById("music-audio");
+    const artEl = document.getElementById("music-art");
+    const titleEl = document.getElementById("music-now-title");
+    const subEl = document.getElementById("music-now-sub");
+    const art = (r.artworkUrl100 || "").replace("100x100", "300x300");
+
+    if(titleEl) titleEl.textContent = r.trackName || "Playing";
+    if(subEl) subEl.textContent = (r.artistName || "") + (r.collectionName ? " • " + r.collectionName : "");
+    if(artEl){
+      if(art){ artEl.src = art; artEl.style.display = "block"; }
+      else { artEl.style.display = "none"; }
+    }
+
+    if(audio){
+      audio.src = r.previewUrl || "";
+      audio.play().catch(() => {});
+    }
+  }
+
+
+
+  function renderGamesFiltered(){
+    const q = normalize(($("games-search")?.value) || "");
+    const grid = $("games-grid");
+    const countEl = $("games-count");
+    if(!grid) return;
+
+    const filtered = q ? ALL_GAMES.filter(z => normalize(z.name).includes(q)) : ALL_GAMES;
+    if(countEl) countEl.textContent = `${filtered.length} game${filtered.length===1?"":"s"} in this search`;
+
+    grid.innerHTML = "";
+    filtered.forEach(z => {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.setAttribute("data-url", buildZoneHtmlUrl(z));
+      const cover = buildCoverUrl(z);
+      const iconStyle = cover ? `style="background-image:url('${cover}');background-size:cover;background-position:center;"` : "";
+      tile.innerHTML = `
+        <div style="display:flex;gap:10px;align-items:center;">
+          <div class="navicon" ${iconStyle}></div>
+          <div style="min-width:0;">
+            <div class="tname" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${z.name || "Untitled Game"}</div>
+            <div class="tdesc" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${z.author ? z.author : (z.id != null ? ("ID " + z.id) : "Click to play")}</div>
+          </div>
+        </div>
+      `;
+      tile.addEventListener("click", () => openOverlay(buildZoneHtmlUrl(z)));
+      grid.appendChild(tile);
+    });
+  }
+
+  async function initGamesFeed(){
+    const grid = $("games-grid");
+    if(!grid) return;
+    grid.innerHTML = `<div style="color:var(--text-muted);font-size:12px;">Loading games…</div>`;
+    try{
+      const res = await fetch(ZONES_URL + "?t=" + Date.now());
+      const data = await res.json();
+      const zones = Array.isArray(data) ? data : [];
+      const filtered = zones.filter(z => {
+        const name = (z && z.name ? z.name : "").toLowerCase();
+        if(name.includes("ovo")) return false;
+        if(isSoundboardZone(z)) return false;
+        if(z && z.id === -1) return false;
+        return true;
+      });
+      ALL_GAMES = filtered;
+      renderGamesFiltered();
+    }catch(e){
+      console.error(e);
+      grid.innerHTML = `<div style="color:var(--text-muted);font-size:12px;">Failed to load games.</div>`;
+      ALL_GAMES = [];
+      const countEl = $("games-count");
+      if(countEl) countEl.textContent = `0 games in this search`;
+    }
+  }
+
+  // ----------------------- Apps -----------------------
+  function renderApps(){
+    const grid = $("apps-grid");
+    if(!grid) return;
+    grid.innerHTML = "";
+    APPS.forEach(app => {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.setAttribute("data-url", app.url);
+      tile.innerHTML = `
+        <div class="tname">${app.name}</div>
+        <div class="tdesc">${app.desc || ""}</div>
+      `;
+      tile.addEventListener("click", () => openOverlay(app.url));
+      grid.appendChild(tile);
+    });
+  }
+
+  // ----------------------- Downloads -----------------------
+  async function downloadUrlAsHtml(url){
+    const res = await fetch(url, { mode:"cors" });
+    const text = await res.text();
+    const a = document.createElement("a");
+    const blob = new Blob([text], { type:"text/html" });
+    a.href = URL.createObjectURL(blob);
+    const safe = (url.split("/").pop() || "game").replace(/[^a-z0-9_\-\.]/gi,"_");
+    a.download = safe.endsWith(".html") ? safe : (safe + ".html");
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+
+  // ----------------------- Password Gate -----------------------
+  function showGate(force = false){
+    const pwd = getSavedPassword();
+    if(!pwd && !force){
+      hideGate();
+      return;
+    }
+    const gate = $("password-gate");
+    if(gate) gate.style.display = "flex";
+    const inp = $("passwordInput");
+    if(inp){ inp.value = ""; inp.focus(); }
+    const err = $("passwordError");
+    if(err) err.textContent = "";
+  }
+  function hideGate(){
+    const gate = $("password-gate");
+    if(gate) gate.style.display = "none";
+  }
+  function getSavedPassword(){ return get(KEYS.sitePass, DEFAULTS.sitePass); }
+  function attemptUnlock(){
+    const inp = $("passwordInput");
+    const err = $("passwordError");
+    if(!getSavedPassword()){
+      hideGate();
+      return true;
+    }
+    const entered = inp ? (inp.value||"") : "";
+    if(entered === getSavedPassword()){
+      hideGate();
+      return true;
+    }
+    if(err){ err.textContent = "Incorrect password."; err.style.color = "#f87171"; }
+    if(inp) inp.focus();
+    return false;
+  }
+
+  // ----------------------- Settings UI -----------------------
+  function refreshSettingsUI(){
+    const themeMode = $("themeMode");
+    const accentPreset = $("accentPreset");
+    const compactMode = $("compactMode");
+    const themeStatus = $("themeStatus");
+
+    if(themeMode) themeMode.value = get(KEYS.theme, DEFAULTS.theme);
+    if(accentPreset) accentPreset.value = get(KEYS.accent, DEFAULTS.accent);
+    if(compactMode) compactMode.checked = get(KEYS.compact, DEFAULTS.compact) === "1";
+    if(themeStatus) themeStatus.textContent = `Theme: ${get(KEYS.theme, DEFAULTS.theme)}, Accent: ${get(KEYS.accent, DEFAULTS.accent)}`;
+
+    const preset = $("panicPreset");
+    const custom = $("panicCustomUrl");
+    const status = $("panicStatus");
+    const confirmBox = $("panicConfirm");
+
+    const current = get(KEYS.panicUrl, DEFAULTS.panicUrl);
+    if(custom) custom.value = current;
+    if(preset){
+      const options = Array.from(preset.options).map(o => o.value);
+      preset.value = options.includes(current) ? current : "custom";
+      if(custom){
+        custom.disabled = preset.value !== "custom";
+        custom.style.opacity = custom.disabled ? "0.6" : "1";
+      }
+    }
+    if(status) status.textContent = "Current: " + current;
+    if(confirmBox) confirmBox.checked = get(KEYS.panicConfirm, DEFAULTS.panicConfirm) === "1";
+  }
+
+  function normalizeUrl(u){
+    try{ return new URL(u).toString(); }catch(e){ return ""; }
+  }
+
+  // ----------------------- Event wiring -----------------------
+  document.addEventListener("DOMContentLoaded", function(){
+    initParticles();
+applyTheme();
+    refreshSettingsUI();
+
+    // Password gate
+    showGate();
+    $("passwordSubmit")?.addEventListener("click", (e) => { e.preventDefault(); attemptUnlock(); });
+    $("passwordInput")?.addEventListener("keydown", (e) => { if(e.key==="Enter"){ e.preventDefault(); attemptUnlock(); } });
+    $("passwordReset")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      if(!confirm("Reset password and all settings?")) return;
+      localStorage.clear();
+      location.reload();
+    });
+
+    // Sidebar nav
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest && e.target.closest("[data-tab-target]");
+      if(!btn) return;
+      e.preventDefault();
+      closeOverlay();
+      setActiveTab(btn.dataset.tabTarget);
+    }, true);
+
+    // Always buttons
+    $("settings-btn")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      closeOverlay();
+      setActiveTab("settings");
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+    $("panic-btn")?.addEventListener("click", (e) => {
+      e.preventDefault();
+      const confirmOn = get(KEYS.panicConfirm, DEFAULTS.panicConfirm) === "1";
+      const target = get(KEYS.panicUrl, DEFAULTS.panicUrl);
+      if(confirmOn && !confirm("Open Panic link now?")) return;
+      window.location.assign(target);
+    });
+
+    // Overlay controls
+    $("close-overlay")?.addEventListener("click", (e) => { e.preventDefault(); closeOverlay(); });
+
+    // Discord tile -> new tab
+    $("discord-tile")?.addEventListener("click", () => window.open(DISCORD_URL, "_blank", "noopener,noreferrer"));
+
+    // Fail modal
+    $("close-fail-modal")?.addEventListener("click", (e) => { e.preventDefault(); closeFailModal(); });
+    $("download-failed-html")?.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const url = window.__LAST_FAILED_GAME_URL__;
+      if(!url) return;
+      try{ await downloadUrlAsHtml(url); }catch(err){}
+    });
+
+    // Games search
+    $("games-search")?.addEventListener("input", renderGamesFiltered);
+
+    // Settings binds
+    $("themeMode")?.addEventListener("change", (e) => { set(KEYS.theme, e.target.value); applyTheme(); refreshSettingsUI(); });
+    $("accentPreset")?.addEventListener("change", (e) => { set(KEYS.accent, e.target.value); applyTheme(); refreshSettingsUI(); });
+    $("compactMode")?.addEventListener("change", (e) => { set(KEYS.compact, e.target.checked ? "1":"0"); applyTheme(); });
+    $("resetSettings")?.addEventListener("click", () => {
+      set(KEYS.theme, DEFAULTS.theme);
+      set(KEYS.accent, DEFAULTS.accent);
+      set(KEYS.compact, DEFAULTS.compact);
+      applyTheme();
+      refreshSettingsUI();
+    });
+
+    // Panic settings
+    $("panicPreset")?.addEventListener("change", (e) => {
+      const custom = $("panicCustomUrl");
+      if(!custom) return;
+      if(e.target.value === "custom"){
+        custom.disabled = false; custom.style.opacity = "1"; custom.focus();
+      }else{
+        custom.disabled = true; custom.style.opacity = "0.6"; custom.value = e.target.value;
+      }
+    });
+    $("savePanicUrl")?.addEventListener("click", () => {
+      const preset = $("panicPreset");
+      const custom = $("panicCustomUrl");
+      const status = $("panicStatus");
+      let chosen = "";
+      if(preset && preset.value !== "custom"){
+        chosen = preset.value;
+      }else if(custom){
+        chosen = normalizeUrl((custom.value||"").trim());
+      }
+      if(!chosen){
+        if(status) status.textContent = "Please enter a valid URL (include https://).";
+        return;
+      }
+      set(KEYS.panicUrl, chosen);
+      if(status) status.textContent = "Saved: " + chosen;
+      refreshSettingsUI();
+    });
+    $("panicConfirm")?.addEventListener("change", (e) => set(KEYS.panicConfirm, e.target.checked ? "1":"0"));
+
+    // Security settings
+    $("saveSitePassword")?.addEventListener("click", () => {
+      const pw = $("sitePassword");
+      const status = $("securityStatus");
+      const v = (pw && pw.value) ? pw.value.trim() : "";
+      if(!v){ if(status) status.textContent = "Enter a password first."; return; }
+      set(KEYS.sitePass, v);
+      if(pw) pw.value = "";
+      if(status) status.textContent = "Password saved.";
+    });
+    $("lockNow")?.addEventListener("click", () => {
+      const status = $("securityStatus");
+      if(!getSavedPassword()){
+        if(status) status.textContent = "Set a password first, then Lock.";
+        return;
+      }
+      showGate(true);
+    });
+
+    
+    // Music search
+    const mInput = document.getElementById("music-search");
+    const mBtn = document.getElementById("music-search-btn");
+    async function runMusicSearch(){
+      const term = (mInput && mInput.value) ? mInput.value : "";
+      const c = document.getElementById("music-count");
+      if(c) c.textContent = "Searching…";
+      try{
+        const results = await itunesSearch(term);
+        renderMusic(results);
+      }catch(e){
+        if(c) c.textContent = "Search failed.";
+        const r = document.getElementById("music-results");
+        if(r) r.innerHTML = `<div style="color:var(--text-muted);font-size:12px;">iTunes API blocked or unavailable.</div>`;
+      }
+    }
+    if(mBtn) mBtn.addEventListener("click", runMusicSearch);
+    if(mInput) mInput.addEventListener("keydown", (e) => { if(e.key==="Enter"){ e.preventDefault(); runMusicSearch(); } });
+
+// Init content
+    renderApps();
+    initGamesFeed();
+  });
+
+  // Expose some functions for debug
+  window.openOverlay = openOverlay;
+  window.closeOverlay = closeOverlay;
+  window.setActiveTab = setActiveTab;
+})();
+</script>
+
+<script>
+
+// Random tagline (with rare easter egg)
+(function(){
+  const normalTaglines = [
+    "Navigate beyond the firewall",
+    "Built for stealth launches",
+    "Neon-ready, daytime-safe",
+    "Precision tuned for schools",
+    "All systems: go"
+  ];
+
+  // 0.01% chance (1 in 10,000)
+  const rareChance = 0.0001;
+  const rareTagline = "Secret 0.01% drop — you found the Zentra wormhole.";
+
+  function pickTagline(){
+    if(Math.random() < rareChance) return rareTagline;
+    return normalTaglines[Math.floor(Math.random() * normalTaglines.length)];
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const el = document.getElementById("tagline");
+    if(el) el.textContent = pickTagline();
+  });
+})();
+
+</script>
+</body>
+</html>
